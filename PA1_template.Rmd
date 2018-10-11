@@ -6,12 +6,31 @@ output:
 ---
 
 
+
 ## Loading and preprocessing the data
+```{r LoadData, cache = TRUE}
+library(data.table)
+library(lubridate)
 
-
+#read data, and 
+activity <- read.csv("activity.csv", header = TRUE)
+activity = na.omit(activity)
+activity <- data.table(activity)
+activity$date <- ymd(activity$date)
+```
 
 ## What is mean total number of steps taken per day?
 
+```{r CalculateMean}
+# group by date and sum the steps
+agg <- aggregate(steps ~ date, activity, sum)
+hist(agg$steps, main = "Total Steps per Day", col = "brown", xlab = "Steps")
+
+# mean and median
+meanSteps <- mean(agg$steps, na.rm = TRUE)
+medSteps <- median(agg$steps, na.rm = TRUE)
+```
+The mean of the total number of steps is `r toString(meanSteps)`. The median of the total number of steps is `r medSteps`.
 
 
 ## What is the average daily activity pattern?
