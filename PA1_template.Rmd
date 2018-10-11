@@ -21,12 +21,14 @@ activity$date <- ymd(activity$date)
 
 ## What is mean total number of steps taken per day?
 
-```{r CalculateMean, echo = TRUE}
+```{r Histogram, echo = TRUE}
 # group by date and sum the steps
 agg <- aggregate(steps ~ date, activity, sum)
 hist(agg$steps, main = "Total Steps per Day", col = "brown", xlab = "Steps")
+```
 
 # mean and median
+```{r CalculateMean, echo = TRUE}
 meanSteps <- mean(agg$steps, na.rm = TRUE)
 medSteps <- median(agg$steps, na.rm = TRUE)
 ```

@@ -29,10 +29,11 @@ agg <- aggregate(steps ~ date, activity, sum)
 hist(agg$steps, main = "Total Steps per Day", col = "brown", xlab = "Steps")
 ```
 
-![](PA1_template_files/figure-html/CalculateMean-1.png)<!-- -->
+![](PA1_template_files/figure-html/Histogram-1.png)<!-- -->
+
+# mean and median
 
 ```r
-# mean and median
 meanSteps <- mean(agg$steps, na.rm = TRUE)
 medSteps <- median(agg$steps, na.rm = TRUE)
 ```
