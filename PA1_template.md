@@ -36,7 +36,8 @@ hist(agg$steps, main = "Total Steps per Day", col = "brown", xlab = "Steps")
 meanSteps <- mean(agg$steps, na.rm = TRUE)
 medSteps <- median(agg$steps, na.rm = TRUE)
 ```
-The mean of the total number of steps is 10766.1886792453. The median of the total number of steps is 10765.
+The mean of the total number of steps is **10766.1886792453**.  
+The median of the total number of steps is **10765**.
 
 
 ## What is the average daily activity pattern?
