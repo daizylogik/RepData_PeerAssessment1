@@ -14,16 +14,16 @@ library(lubridate)
 
 #read data, and 
 activity <- read.csv("activity.csv", header = TRUE)
-activity = na.omit(activity)
-activity <- data.table(activity)
-activity$date <- ymd(activity$date)
+activity_no_na = na.omit(activity)
+activity_no_na <- data.table(activity_no_na)
+activity_no_na$date <- ymd(activity_no_na$date)
 ```
 
 ## What is mean total number of steps taken per day?
 
 ```{r Histogram, echo = TRUE}
 # group by date and sum the steps
-agg <- aggregate(steps ~ date, activity, sum)
+agg <- aggregate(steps ~ date, activity_no_na, sum)
 hist(agg$steps, main = "Total Steps per Day", col = "brown", xlab = "Steps")
 ```
 
@@ -38,7 +38,7 @@ The median of the total number of steps is **`r medSteps`**.
 
 ## What is the average daily activity pattern?
 ```{r AvgSteps, echo = TRUE}
-avgSteps <- aggregate(steps ~ interval, activity, mean)
+avgSteps <- aggregate(steps ~ interval, activity_no_na, mean)
 plot(avgSteps$interval, avgSteps$steps, type = "l", xlab = "Interval", ylab = "Average Steps", 
      main = "Average Daily Activity", col = "brown")
 
@@ -50,7 +50,30 @@ maxInterval <- subset(avgSteps, steps == max(steps))$interval
 The interval **`r toString(maxInterval)`** contains the maximum number of steps **`r maxSteps`**.
 
 ## Imputing missing values
+```{r NAs, echo = TRUE}
 
+# calculate number of NAs
+naRows <- subset(activity, is.na(activity))
+completeRows <- subset(activity, !is.na(activity))
 
+naCount <- nrow(naRows)
+
+merged <- merge(naRows, avgSteps, by = "interval")
+naRows$steps <- merged$steps.y
+final <- rbind(naRows, completeRows)
+finalAgg <- aggregate(steps ~ date, final, sum)
+hist(finalAgg$steps, main = "Total Steps per Day w/ Imputed Values", col = "red", xlab = "Steps")
+
+# mean and median
+meanFinalSteps <- mean(finalAgg$steps, na.rm = TRUE)
+meanFinalSteps <- format(round(meanFinalSteps, 2), nsmall = 2)
+medFinalSteps <- median(finalAgg$steps, na.rm = TRUE)
+medFinalSteps <- format(round(medFinalSteps, 2), nsmall = 2)
+```
+
+There are **`r toString(naCount)`** missing values.  
+The mean for the dataset with imputed values is **`r meanFinalSteps`**.  
+The median for the dataset with imputed values is **`r medFinalSteps`**.  
+The mean of the complete is the same as the mean for the dataset without missing values. The median is almost the same, with a difference of 250.
 
 ## Are there differences in activity patterns between weekdays and weekends?
