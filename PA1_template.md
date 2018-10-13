@@ -31,7 +31,7 @@ hist(agg$steps, main = "Total Steps per Day", col = "brown", xlab = "Steps")
 
 ![](PA1_template_files/figure-html/Histogram-1.png)<!-- -->
 
-# mean and median
+# Mean and Median
 
 ```r
 meanSteps <- mean(agg$steps, na.rm = TRUE)
@@ -43,7 +43,21 @@ The median of the total number of steps is **10765**.
 
 ## What is the average daily activity pattern?
 
+```r
+avgSteps <- aggregate(steps ~ interval, activity, mean)
+plot(avgSteps$interval, avgSteps$steps, type = "l", xlab = "Interval", ylab = "Average Steps", 
+     main = "Average Daily Activity", col = "brown")
+```
 
+![](PA1_template_files/figure-html/AvgSteps-1.png)<!-- -->
+
+```r
+# max # of avg steps
+maxSteps <- max(avgSteps$steps)
+maxSteps <- format(round(maxSteps, 2), nsmall = 2)
+maxInterval <- subset(avgSteps, steps == max(steps))$interval
+```
+The interval **835** contains the maximum number of steps **206.17**.
 
 ## Imputing missing values
 
