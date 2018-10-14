@@ -79,9 +79,9 @@ hist(finalAgg$steps, main = "Total Steps per Day w/ Imputed Values", col = "red"
 
 ```r
 # mean and median
-meanFinalSteps <- mean(finalAgg$steps, na.rm = TRUE)
+meanFinalSteps <- mean(finalAgg$steps)
 meanFinalSteps <- format(round(meanFinalSteps, 2), nsmall = 2)
-medFinalSteps <- median(finalAgg$steps, na.rm = TRUE)
+medFinalSteps <- median(finalAgg$steps)
 medFinalSteps <- format(round(medFinalSteps, 2), nsmall = 2)
 ```
 
@@ -91,3 +91,45 @@ The median for the dataset with imputed values is **11015.00**.
 The mean of the complete is the same as the mean for the dataset without missing values. The median is almost the same, with a difference of 250.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+```r
+library(lubridate)
+```
+
+```
+## 
+## Attaching package: 'lubridate'
+```
+
+```
+## The following object is masked from 'package:base':
+## 
+##     date
+```
+
+```r
+library(lattice)
+
+# add the weekday
+final$weekday <- as.factor(weekdays(ymd(final$date)))
+final$is_weekday <- !(final$weekday == "Saturday" | final$weekday == "Sunday")
+
+finalWeekday <- subset(final, is_weekday == TRUE)
+finalWeekend <- subset(final, is_weekday == FALSE)
+
+# aggregate and sum
+finalWeekdayAgg <- aggregate(steps ~ interval, finalWeekday, mean)
+finalWeekendAgg <- aggregate(steps ~ interval, finalWeekend, mean)
+
+# union the two datatasets and and a day column
+finalWeekdayAgg$day <- "Weekday"
+finalWeekendAgg$day <- "Weekend"
+finalData <- rbind(finalWeekdayAgg, finalWeekendAgg)
+
+# panel plot
+panel <- xyplot(steps ~  interval | day, data = finalData, layout = c(1,2), type ="l", ylab="No of Steps")
+print(panel)
+```
+
+![](PA1_template_files/figure-html/Weekends-1.png)<!-- -->
